@@ -1,21 +1,39 @@
 # <------ ROCK PAPER SCISSORs ----->
+from fastapi import FastAPI, Request
 import random
+from fastapi.middleware.cors import CORSMiddleware
+
+
+
+app = FastAPI()
+
+origins = [
+    "http://localhost:8000",  # Your frontend URL
+    "http://localhost:5000",  # Another allowed frontend URL (if applicable)
+]
+
+# Add CORSMiddleware to the FastAPI app
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow requests from the specified origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
+
 game_choices = ['rock', 'paper', 'scissors']
 
 
-def select_choices():
-    player_choice = input("Enter the choice please ('rock', 'paper', 'scissors'): ")
-    computer_choice = random.choice(game_choices)
-    user_choices = {
-        'player': player_choice,
-        'computer': computer_choice
-    }    
-    return user_choices
 
+@app.get('/winner/')
+def winner_of_rps(requests:Request):
+    
+    player = requests.query_params.get('player_choice')
 
-def winner_of_rps(response):
-    player = response['player']
-    computer = response['computer']
+    computer = random.choice(game_choices)
+    player_count = 0
+    computer_count = 0
+    message = ''
     
     print(f"You chose {player} and Computer chose {computer}")
     
@@ -24,20 +42,35 @@ def winner_of_rps(response):
     
     elif player == 'rock':
         if computer == 'scissors':
-            return "Rock smashes Scissors! You win!"
+            player_count += 1
+            message = "Rock smashes Scissors! You win!"
         else:
-            return "Paper covers the rock! You Lose!"
+            computer_count +=1
+            message = "Paper covers the rock! You Lose!"
     
     elif player == 'paper':
         if computer == 'scissors':
-            return "Scissor cuts the paper ! You Lose!"
+            computer_count +=1
+            message = "Scissor cuts the paper ! You Lose!"
         else:
-            return "Paper covers the rock! You Win!"
+            player_count += 1
+            message = "Paper covers the rock! You Win!"
        
     elif player == 'scissors':
         if computer == 'paper':
-            return "Scissor cuts the paper ! You Win!"
+            player_count += 1
+            message = "Scissor cuts the paper ! You Win!"
         else:
-            return "Rock smashes Scissors! You Lose!" 
+            computer_count +=1
+            message = "Rock smashes Scissors! You Lose!" 
+            
+    return {
+        "computer_wins": computer_count,
+        "player_wins": player_count,
+        "message": message
+    }
         
-print(winner_of_rps(select_choices()))
+        
+# print(winner_of_rps(select_choices()))
+
+
