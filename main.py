@@ -1,27 +1,43 @@
-# <------ ROCK PAPER SCISSOR ----->
+# <------ ROCK PAPER SCISSORs ----->
 import random
-game_choices = ['rock', 'paper', 'scissor']
+game_choices = ['rock', 'paper', 'scissors']
 
 
 def select_choices():
-    player_choice = input("Enter the choice please ('rock', 'paper', 'scissor'): ")
-    computer_choice = random.choices(game_choices)
+    player_choice = input("Enter the choice please ('rock', 'paper', 'scissors'): ")
+    computer_choice = random.choice(game_choices)
     user_choices = {
         'player': player_choice,
-        'computer': computer_choice[0]
-    }
-    print(user_choices)
-    
+        'computer': computer_choice
+    }    
     return user_choices
 
 
 def winner_of_rps(response):
-    if (response['player'] == 'rock' and response['computer'] == 'scissor') or (response['player'] == 'paper' and response['computer'] == 'rock') or (response['player'] == 'scissor' and response['computer'] == 'paper'):
-        return "Player wins!"
+    player = response['player']
+    computer = response['computer']
     
-    elif response['player'] == response['computer']:
+    print(f"You chose {player} and Computer chose {computer}")
+    
+    if player == computer:
         return "Oh ho!! It's a tie.."
     
-    return "Computer wins!"
-
+    elif player == 'rock':
+        if computer == 'scissors':
+            return "Rock smashes Scissors! You win!"
+        else:
+            return "Paper covers the rock! You Lose!"
+    
+    elif player == 'paper':
+        if computer == 'scissors':
+            return "Scissor cuts the paper ! You Lose!"
+        else:
+            return "Paper covers the rock! You Win!"
+       
+    elif player == 'scissors':
+        if computer == 'paper':
+            return "Scissor cuts the paper ! You Win!"
+        else:
+            return "Rock smashes Scissors! You Lose!" 
+        
 print(winner_of_rps(select_choices()))
